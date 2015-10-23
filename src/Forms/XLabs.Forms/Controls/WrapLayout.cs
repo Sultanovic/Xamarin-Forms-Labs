@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.IO;
 using Xamarin.Forms;
+
 
 namespace XLabs.Forms.Controls
 {
@@ -43,6 +46,24 @@ namespace XLabs.Forms.Controls
             get { return (double)GetValue(SpacingProperty); }
             set { SetValue(SpacingProperty, value); }
         }
+
+        /// <summary>
+        /// Backing Storage of Alignment property 
+        /// </summary>
+        public static readonly BindableProperty AlignmentProperty =
+            BindableProperty.Create<WrapLayout, LayoutAlignment>(w => w.Alignment, LayoutAlignment.Start,
+                propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable).OnSizeChanged());
+
+        /// <summary>
+        /// Alignment of the elements. Only Fill and Center are ignored. Default is Start.
+        /// </summary>
+        /// <value>The Alignment.</value>
+        public LayoutAlignment Alignment
+        {
+            get { return (LayoutAlignment)GetValue(AlignmentProperty); }
+            set { SetValue(AlignmentProperty, value); }
+        }
+
 
         /// <summary>
         /// This is called when the spacing or orientation properties are changed - it forces
@@ -205,10 +226,10 @@ namespace XLabs.Forms.Controls
 
                 foreach (var child in Children.Where(c => c.IsVisible))
                 {
-                    var request = child.GetSizeRequest(width, height);
+                    var sizeRequest = child.GetSizeRequest(width, height);
 
-                    var childWidth = request.Request.Width;
-                    var childHeight = request.Request.Height;
+                    var childWidth =  sizeRequest.Request.Width;
+                    var childHeight = sizeRequest.Request.Height;
 
                     colWidth = Math.Max(colWidth, childWidth);
 
@@ -229,15 +250,20 @@ namespace XLabs.Forms.Controls
             else
             {
                 double rowHeight = 0;
+                double max = 0;
+
                 var yPos = y;
                 var xPos = x;
 
-                double max = 0;
+                if (Alignment == LayoutAlignment.End)
+                {
+                    xPos = width;
+                }
 
                 foreach (var child in Children.Where(c => c.IsVisible))
                 {
-                    var request = child.GetSizeRequest(width, height);
-                    max = Math.Max(max, request.Request.Width);
+                    var sizeRequest = child.GetSizeRequest(width, height);
+                    max = Math.Max(max, sizeRequest.Request.Width);
                 }
 
                 foreach (var child in Children.Where(c => c.IsVisible))
@@ -249,18 +275,43 @@ namespace XLabs.Forms.Controls
 
                     rowHeight = Math.Max(rowHeight, childHeight);
 
-                    if (xPos + childWidth > width)
+                    if (Alignment != LayoutAlignment.End)
                     {
-                        xPos = x;
-                        yPos += rowHeight + Spacing;
-                        rowHeight = 0;
+                        if (xPos + childWidth > width)
+                        {
+                            xPos = x;
+                            yPos += rowHeight + Spacing;
+                            rowHeight = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (xPos - childWidth < 0)
+                        {
+                            xPos = width;
+                            yPos += rowHeight + Spacing;
+                            rowHeight = 0;
+                        }
+                        else
+                        {
+                            xPos -= childWidth;
+                        }
                     }
 
                     var region = new Rectangle(xPos, yPos, childWidth, childHeight);
 
                     LayoutChildIntoBoundingRegion(child, region);
 
-                    xPos += region.Width + Spacing;
+                    if (Alignment != LayoutAlignment.End)
+                    {
+                        xPos += (childWidth + Spacing);
+                    
+                    }
+                    else
+                    {
+                        xPos -= (childWidth + Spacing);
+                    }
+
                 }
 
             }

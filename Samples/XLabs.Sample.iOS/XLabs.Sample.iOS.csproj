@@ -190,7 +190,6 @@
     <None Include="Info.plist">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Entitlements.plist" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <None Include="packages.config" />

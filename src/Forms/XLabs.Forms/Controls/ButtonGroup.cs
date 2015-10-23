@@ -66,11 +66,19 @@ namespace XLabs.Forms.Controls
 		/// The is number property
 		/// </summary>
 		public static readonly BindableProperty IsNumberProperty = BindableProperty.Create("IsNumber", typeof(bool), typeof(ButtonGroup), false);
+        /// <summary>
+        /// The ButtonsHeight property
+        /// </summary>
+        public static readonly BindableProperty ButtonHeightRequestProperty = BindableProperty.Create("ButtonHeightRequest", typeof(int), typeof(ButtonGroup), Device.OnPlatform(DEFAULT_BUTTON_HEIGHT,DEFAULT_BUTTON_HEIGHT,DEFAULT_BUTTON_HEIGHT_WP));
+        /// <summary>
+        /// The selected item has schadow property
+        /// </summary>
+        public static readonly BindableProperty SelectedItemHasShadowProperty = BindableProperty.Create("SelectedItemHasShadow", typeof(bool), typeof(ButtonGroup), false);
 
-		/// <summary>
-		/// The button layout
-		/// </summary>
-		private readonly WrapLayout _buttonLayout;
+        /// <summary>
+        /// The button layout
+        /// </summary>
+        private readonly WrapLayout _buttonLayout;
 		/// <summary>
 		/// The spacing
 		/// </summary>
@@ -94,28 +102,26 @@ namespace XLabs.Forms.Controls
 		/// <summary>
 		/// The button height
 		/// </summary>
-		private const int BUTTON_HEIGHT = 44;
-		/// <summary>
-		/// The button height wp
-		/// </summary>
-		private const int BUTTON_HEIGHT_WP = 72;
-		/// <summary>
-		/// The button half height
-		/// </summary>
-		private const int BUTTON_HALF_HEIGHT = 22;
-		/// <summary>
-		/// The button half height wp
-		/// </summary>
-		private const int BUTTON_HALF_HEIGHT_WP = 36;
+		private const int MIN_BUTTON_HEIGHT = 10;
+        /// <summary>
+        /// The button height
+        /// </summary>
+        private const int DEFAULT_BUTTON_HEIGHT = 44;
+        /// <summary>
+        /// The button height wp
+        /// </summary>
+        private const int MIN_BUTTON_HEIGHT_WP = 16;
+        /// <summary>
+        /// The button height
+        /// </summary>
+        private const int DEFAULT_BUTTON_HEIGHT_WP = 72;
 
-
-
-		#region Properties
-		/// <summary>
-		/// Gets or sets the color of the outline.
-		/// </summary>
-		/// <value>The color of the outline.</value>
-		public Color OutlineColor
+        #region Properties
+        /// <summary>
+        /// Gets or sets the color of the outline.
+        /// </summary>
+        /// <value>The color of the outline.</value>
+        public Color OutlineColor
 		{
 			get
 			{
@@ -153,7 +159,10 @@ namespace XLabs.Forms.Controls
 		public Color BackgroundColor
 #pragma warning restore CS0108 // Member hides inherited member; missing new keyword
 		{
-			get { return (Color)GetValue(BackgroundColorProperty); }
+			get
+            {
+                return (Color)GetValue(BackgroundColorProperty);
+            }
 			set
 			{
 				SetValue(BackgroundColorProperty, value);
@@ -176,7 +185,10 @@ namespace XLabs.Forms.Controls
 		/// <value>The color of the selected background.</value>
 		public Color SelectedBackgroundColor
 		{
-			get { return (Color)GetValue(SelectedBackgroundColorProperty); }
+			get
+            {
+                return (Color)GetValue(SelectedBackgroundColorProperty);
+            }
 			set
 			{
 				SetValue(SelectedBackgroundColorProperty, value);
@@ -199,8 +211,14 @@ namespace XLabs.Forms.Controls
 		/// <value>The color of the text.</value>
 		public Color TextColor
 		{
-			get { return (Color)GetValue(TextColorProperty); }
-			set { SetValue(TextColorProperty, value); }
+			get
+            {
+                return (Color)GetValue(TextColorProperty);
+            }
+			set
+            {
+                SetValue(TextColorProperty, value);
+            }
 		}
 
 		/// <summary>
@@ -209,8 +227,14 @@ namespace XLabs.Forms.Controls
 		/// <value>The color of the selected text.</value>
 		public Color SelectedTextColor
 		{
-			get { return (Color)GetValue(SelectedTextColorProperty); }
-			set { SetValue(SelectedTextColorProperty, value); }
+			get
+            {
+                return (Color)GetValue(SelectedTextColorProperty);
+            }
+			set
+            {
+                SetValue(SelectedTextColorProperty, value);
+            }
 		}
 
 		/// <summary>
@@ -219,8 +243,14 @@ namespace XLabs.Forms.Controls
 		/// <value>The color of the border.</value>
 		public Color BorderColor
 		{
-			get { return (Color)GetValue(BorderColorProperty); }
-			set { SetValue(BorderColorProperty, value); }
+			get
+            {
+                return (Color)GetValue(BorderColorProperty);
+            }
+			set
+            {
+                SetValue(BorderColorProperty, value);
+            }
 		}
 
 		/// <summary>
@@ -229,8 +259,14 @@ namespace XLabs.Forms.Controls
 		/// <value>The color of the selected border.</value>
 		public Color SelectedBorderColor
 		{
-			get { return (Color)GetValue(SelectedBorderColorProperty); }
-			set { SetValue(SelectedBorderColorProperty, value); }
+			get
+            {
+                return (Color)GetValue(SelectedBorderColorProperty);
+            }
+			set
+            {
+                SetValue(SelectedBorderColorProperty, value);
+            }
 		}
 		/// <summary>
 		/// Gets or sets the color of the selected frame background.
@@ -238,10 +274,15 @@ namespace XLabs.Forms.Controls
 		/// <value>The color of the selected frame background.</value>
 		public Color SelectedFrameBackgroundColor
 		{
-			get { return (Color)GetValue(SelectedFrameBackgroundColorProperty); }
-			set { SetValue(SelectedFrameBackgroundColorProperty, value); }
+			get
+            {
+                return (Color)GetValue(SelectedFrameBackgroundColorProperty);
+            }
+			set
+            {
+                SetValue(SelectedFrameBackgroundColorProperty, value);
+            }
 		}
-
 
 		/// <summary>
 		/// Gets or sets the font.
@@ -249,8 +290,14 @@ namespace XLabs.Forms.Controls
 		/// <value>The font.</value>
 		public Font Font
 		{
-			get { return (Font)GetValue(FontProperty); }
-			set { SetValue(FontProperty, value); }
+			get
+            {
+                return (Font)GetValue(FontProperty);
+            }
+			set
+            {
+                SetValue(FontProperty, value);
+            }
 		}
 
 		/// <summary>
@@ -292,6 +339,8 @@ namespace XLabs.Forms.Controls
 				{
 					AddButton(item);
 				}
+
+                HorizontalOptions = LayoutOptions.FillAndExpand;
 			}
 		}
 
@@ -327,31 +376,67 @@ namespace XLabs.Forms.Controls
 			}
 		}
 
-		#endregion
+        /// <summary>
+        /// Gets or sets a value indicating whether schadow is displayed on the selected item.
+        /// </summary>
+        public bool SelectedItemHasShadow
+        {
+            get
+            {
+                return (bool)GetValue(SelectedItemHasShadowProperty);
+            }
+            set
+            {
+                SetValue(SelectedItemHasShadowProperty, value);
+            }
+        }
 
-		/// <summary>
-		/// The clicked command
-		/// </summary>
-		private Command _clickedCommand;
+        /// <summary>
+        /// Gets or sets the height of the buttons in the group.
+        /// </summary>
+        /// <value><c>true</c> if this instance is number; otherwise, <c>false</c>.</value>
+        public int ButtonHeightRequest
+        {
+            get
+            {
+                return (int)GetValue(ButtonHeightRequestProperty);
+            }
+            set
+            {
+                SetValue(ButtonHeightRequestProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the spacing between the buttons in the group.
+        /// </summary>
+        public double Spacing { get; set; }
+        #endregion
+
+        /// <summary>
+        /// The clicked command
+        /// </summary>
+        private Command _clickedCommand;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ButtonGroup"/> class.
 		/// </summary>
 		public ButtonGroup()
 		{
-			_buttonLayout = new WrapLayout
-			{
-				Spacing = SPACING,
-				Padding = PADDING,
-				Orientation = StackOrientation.Horizontal,
-				HorizontalOptions = LayoutOptions.Center,
-				VerticalOptions = LayoutOptions.Center,
+            _buttonLayout = new WrapLayout
+            {
+                Spacing = this.Spacing,
+                Padding = this.Padding,
+                Orientation = StackOrientation.Horizontal,
+                Alignment = this.HorizontalOptions.Alignment,
+				VerticalOptions = LayoutOptions.CenterAndExpand
 			};
 
-			HorizontalOptions = LayoutOptions.FillAndExpand;
+			HorizontalOptions = LayoutOptions.EndAndExpand;
 			VerticalOptions = LayoutOptions.Center;
-			//Padding = new Thickness(Spacing);
+            
 			Content = _buttonLayout;
+
 			_clickedCommand = new Command(SetSelectedButton);
 		}
 
@@ -361,19 +446,16 @@ namespace XLabs.Forms.Controls
 		/// <param name="text">The text.</param>
 		public void AddButton(string text)
 		{
-			var button = new Button
-			{
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				BackgroundColor = BackgroundColor,
-				BorderColor = BorderColor,
-				TextColor = TextColor,
-				BorderWidth = BUTTON_BORDER_WIDTH,
-				BorderRadius =
-					Rounded
-						? Device.OnPlatform(BUTTON_HALF_HEIGHT, BUTTON_HALF_HEIGHT, BUTTON_HALF_HEIGHT_WP)
-						: BUTTON_BORDER_RADIUS,
-				HeightRequest = Device.OnPlatform(BUTTON_HEIGHT, BUTTON_HEIGHT, BUTTON_HEIGHT_WP),
-				MinimumHeightRequest = Device.OnPlatform(BUTTON_HEIGHT, BUTTON_HEIGHT, BUTTON_HEIGHT_WP),
+            var button = new Button
+            {
+                //HorizontalOptions = LayoutOptions.FillAndExpand,
+                BackgroundColor = BackgroundColor,
+                BorderColor = BorderColor,
+                TextColor = TextColor,
+                BorderWidth = BUTTON_BORDER_WIDTH,
+                BorderRadius = Rounded ? Device.OnPlatform(ButtonHeightRequest/2,ButtonHeightRequest/2, ButtonHeightRequest/2) : BUTTON_BORDER_RADIUS,
+                HeightRequest = Device.OnPlatform(ButtonHeightRequest, ButtonHeightRequest, ButtonHeightRequest * (DEFAULT_BUTTON_HEIGHT_WP/DEFAULT_BUTTON_HEIGHT)),
+                MinimumHeightRequest = Device.OnPlatform(MIN_BUTTON_HEIGHT, MIN_BUTTON_HEIGHT, MIN_BUTTON_HEIGHT_WP),
 				Font = Font,
 				Command = _clickedCommand,
 				CommandParameter = _buttonLayout.Children.Count,
@@ -382,20 +464,21 @@ namespace XLabs.Forms.Controls
 			if (IsNumber)
 			{
 				button.Text = string.Format("{0}", text);
-				button.WidthRequest = Device.OnPlatform(44, 44, 72);
-				button.MinimumWidthRequest = Device.OnPlatform(44, 44, 72);
+				button.WidthRequest = Device.OnPlatform(ButtonHeightRequest, ButtonHeightRequest, ButtonHeightRequest * (DEFAULT_BUTTON_HEIGHT_WP / DEFAULT_BUTTON_HEIGHT));
+				button.MinimumWidthRequest = Device.OnPlatform(MIN_BUTTON_HEIGHT, MIN_BUTTON_HEIGHT, MIN_BUTTON_HEIGHT_WP * (DEFAULT_BUTTON_HEIGHT_WP / DEFAULT_BUTTON_HEIGHT));
 			}
 			else
 			{
-				button.Text = string.Format("  {0}  ", text);
+				button.Text = string.Format(" {0} ", text);
 			}
 
 			var frame = new Frame
 			{
 				BackgroundColor = ViewBackgroundColor,
-				Padding = FRAME_PADDING,
+				Padding = this.Spacing,
 				OutlineColor = OutlineColor,
 				HasShadow = false,
+                VerticalOptions = LayoutOptions.CenterAndExpand,
 				Content = button,
 			};
 
@@ -427,7 +510,7 @@ namespace XLabs.Forms.Controls
 
 			var frame = (Frame)_buttonLayout.Children[index];
 
-			frame.HasShadow = isSelected;
+			frame.HasShadow = (isSelected && SelectedItemHasShadow);
 
 			frame.BackgroundColor = isSelected ? SelectedFrameBackgroundColor : ViewBackgroundColor;
 
